@@ -25,12 +25,26 @@ ddtSchemes
 gradSchemes
 {
     default         Gauss linear;
+    limited         cellLimited Gauss linear 1;
+    grad(U)         $limited;
+    grad(k)         $limited;
+    grad(omega)     $limited;
 }
+
+scalarScheme vanAlbada;
+vectorScheme vanAbadaV;
 
 divSchemes
 {
     default         none;
     div(tauMC)      Gauss linear;
+    
+    //turbulence schemes
+    div(phi,omega)	Gauss $scalarScheme;
+    div(phi,k)		Gauss $scalarScheme;
+    div(phi,epsilon)    Gauss $scalarScheme;
+    div((nuEff*dev2(T(grad(U))))) Gauss linear;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
 }
 
 laplacianSchemes
@@ -50,6 +64,9 @@ snGradSchemes
 {
     default         corrected;
 }
-
+wallDist
+{
+    method	    meshWave;
+}
 
 // ************************************************************************* //
